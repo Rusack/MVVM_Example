@@ -1,0 +1,13 @@
+﻿<Window x:Class="MVVM_Exemple.View.HTML_Viewer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MVVM_Exemple.View"
+        mc:Ignorable="d"
+        Title="HTML_Viewer" Height="300" Width="300">
+    <Grid>
+        <!-- Simple fenêtre pour montrer un document HTML, ici pas besoin de MVVM sachant que c'est une action purement visuelle (pas de logique ni de base de données derrière, le rapport est envoyé tout fait à cette fenêtre)-->
+        <WebBrowser Name="reportViewer"></WebBrowser>
+    </Grid>
+</Window>

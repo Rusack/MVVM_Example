@@ -1,0 +1,139 @@
+﻿<Window x:Class="MVVM_Exemple.VPersonne"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MVVM_Exemple"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    
+    <!--Définit une grille qui organisera notre vue en lignes et colonnes-->
+    <Grid>
+        <!--Définit le nombre de colonnes ainsi que leur taille-->
+        <Grid.ColumnDefinitions>
+            <!--Définit une colonne de largeur 2 -->
+            <ColumnDefinition Width="2*"/>
+            <!--Définit une colonne de largeur 1 -->
+            <ColumnDefinition Width="1*"/>
+            <!--Notre grille est donc divisée en deux colonnes, une occupant 2/3 et une autre 1/3 de la grille -->
+        </Grid.ColumnDefinitions>
+        <!--Définit le nombre de ligne ainsi que leur taille-->
+        <Grid.RowDefinitions>
+            <!--Définit une colonne de largeur 3 -->
+            <RowDefinition Height="3*"/>
+            <!--Définit une colonne de largeur 1 -->
+            <RowDefinition Height="1*"/>
+            <!--Notre grille est donc divisée en deux lignes, une occupant 3/4 et une autre 1/4 de la grille -->
+        </Grid.RowDefinitions>
+
+        <!--Définit un DataGrid qui servira comme emplacement pour afficher nos données, lorsqu'un élément est placé dans une grille, il est important de spécifier
+            dans quelle ligne et quelle colonne celui-ci doit se placer-->
+
+        <!--Grid.Column et Grid.Row définissent la ligne et colonne dans laquelle se place un controle-->
+        <!--Le datagrid est bind à une liste de personnes, il ira donc chercher les informations à afficher dans cette liste.
+        Le binding TwoWay établit la transmission des modifications dans les deux sens (De vue à VueModèle et de VueModèle à vue)
+        Par conséquent en cas de modification de la liste de personne dans le vueModèle, la vue sera automatiquement mise à jour
+        C'est ça la magie du WPF et MVVM-->
+        <DataGrid AutoGenerateColumns="true"
+              
+              Grid.Column="0" 
+              Grid.Row="0"
+              HorizontalAlignment="Center" 
+              Margin="12,12,12,12" 
+              Name="PersonneDataGrid" 
+              VerticalAlignment="Center" 
+              IsManipulationEnabled="True"
+              IsReadOnly="True" 
+              SelectionMode="Single"
+              ItemsSource="{Binding Personnes}" 
+              SelectedItem="{Binding CurrentPersonne, Mode=TwoWay}"/>
+
+        <!--On déclare un stack panel, ce type de panel permet d'entasser les contrôles comme une pile (d'où le nom), cela permet aussi de ne préciser la position dans la grille qu'une seule fois pour tous les controles
+            Vu que les controles contenus dans le stack panel seront automatiquement mis à la même position
+            Le binding du stack panel, permet de décider si les éléments sont modifiables ou non-->
+        <StackPanel
+             IsEnabled="{Binding StackPanelAccessible}"
+             Grid.Column="1"
+             Grid.Row="0">
+            <Label Content="{Binding ActionEnCours}"/>
+            <Label Content="Nom"/>
+            <!--Le dataContext est l'objet où le controle (ici la textbox) va aller chercher les infos qui sont précisées dans un binding
+            Ici par exemple on définit le dataContext de la textBox comme étant l'objet CurrentPersonne (Qui lui même est dans le dataContext de la fenêtre qui est le ViewModel)
+            Le second binding précise quelle propriété de l'objet CurrentPersonne doit être récupérée, ici c'est le Nom
+            En résumé pour aller récupéré le nom : ViewModel (DataContext de la fenêtre entière) -> CurrentPersonne (DataContext de la textbox) -> Nom
+            On peut donc voir ça comme NameTextBox.text = viewModel.CurrentPersonne.Nom -->
+            <TextBox Height="23" HorizontalAlignment="Left" 
+             Name="NomTextBox" VerticalAlignment="Top" 
+             DataContext="{Binding CurrentPersonne}" 
+             Width="120" 
+             Text="{Binding Nom, Mode=TwoWay}" />
+            <Label Content="Prénom"/>
+            <TextBox Height="23" HorizontalAlignment="Left" 
+             Name="PrenomTextBox" VerticalAlignment="Top" 
+             DataContext="{Binding CurrentPersonne}" 
+             Width="120" 
+             Text="{Binding Pre, Mode=TwoWay}" />
+            <Label Content="Date de naissance"/>
+            <!-- Controle permettant de sélectionner une date comme en HTML-->
+            <DatePicker
+             Height="25" HorizontalAlignment="Left" 
+             Name="NaissanceDatePicker" VerticalAlignment="Top" 
+             DataContext="{Binding CurrentPersonne}" 
+             Width="120" 
+             Text="{Binding Nai, Mode=TwoWay}" />
+            <Button 
+             Margin="25"
+             Height="23" HorizontalAlignment="Center"
+             Content="Valider" 
+             Name="validerBtn"  VerticalAlignment="Top" 
+             Command="{Binding Commande_ValiderEnregistrement}"
+             Width="120" />
+        </StackPanel>
+
+        <!-- Les boutons sont bindés à des commandes du Vue Modèle-->
+        <Button
+             Grid.Column="0"
+             Grid.Row="1"
+             Margin="10,25,224,0"
+             Height="30" HorizontalAlignment="Center"
+             Content="Ajouter" 
+             Name="AjouterBtn"  VerticalAlignment="Top" 
+             Command="{Binding Commande_AjouterPersonne}"
+             Width="111" />
+        <Button 
+             Grid.Column="0"
+             Grid.Row="1"
+             Margin="123,25,116,0"
+             Height="30" HorizontalAlignment="Center"
+             Content="Modifier" 
+             Name="ModifierBtn"  VerticalAlignment="Top" 
+             Command="{Binding Commande_ModifierPersonne}"
+             Width="106" />
+        <Button 
+        	Grid.Column="0"
+        	Grid.Row="1"
+        	Margin="229,25,10,0"
+        	Height="30" HorizontalAlignment="Center"
+        	Content="Supprimer" 
+        	x:Name="SupprimerBtn"  VerticalAlignment="Top" 
+        	Command="{Binding Commande_SupprimerPersonne}"
+        	Width="106" />
+
+
+        <!--Définit un dock panel pour placer un menu en haut de la fenêtre (il faut un dock panel pour que le menu puisse se docker en haut)-->
+        <DockPanel>
+            <StackPanel>
+                <Menu DockPanel.Dock="Top">
+                    <MenuItem Header="_Actions">
+                        <MenuItem Header="_Générer HTML" Command="{Binding Commande_GenererRapportHTML}"/>
+                    </MenuItem>
+                </Menu>
+            </StackPanel>
+        </DockPanel>
+
+
+
+
+
+    </Grid>
+</Window>

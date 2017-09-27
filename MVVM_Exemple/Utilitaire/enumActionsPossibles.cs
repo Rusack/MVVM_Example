@@ -1,0 +1,1 @@
+﻿public enum ActionsPossibles { VISUALISER, AJOUTER, MODIFIER, SUPPRIMER}
